@@ -1,4 +1,5 @@
 // Brainrot Bonanza — a roblox-brainrot-01 entry (Node 22, standard library only).
+// Published live on Roblox as Public experience "Tempat raka007037" — place 129878192969262, universe 8219977418 (see PLAY.json).
 // The game is this directory's Rojo project, built into game.rbxl with
 // `rojo build default.project.json --output game.rbxl`, and this program hands
 // it in: it copies game.rbxl, src/, screenshots/ and PLAY.json from beside this
