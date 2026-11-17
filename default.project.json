@@ -1,0 +1,2529 @@
+{
+  "name": "brainrot-bonanza",
+  "tree": {
+    "$className": "DataModel",
+    "Lighting": {
+      "$properties": {
+        "Ambient": [
+          0.4,
+          0.4,
+          0.45
+        ],
+        "Brightness": 2,
+        "ClockTime": 14,
+        "GlobalShadows": true,
+        "Outlines": false,
+        "Technology": "Voxel"
+      }
+    },
+    "Players": {
+      "$properties": {
+        "CharacterAutoLoads": true,
+        "RespawnTime": 3
+      }
+    },
+    "ReplicatedStorage": {
+      "Shared": {
+        "$path": "src/shared"
+      }
+    },
+    "ServerScriptService": {
+      "Server": {
+        "$path": "src/server"
+      }
+    },
+    "SoundService": {
+      "$properties": {
+        "RespectFilteringEnabled": true
+      }
+    },
+    "StarterPlayer": {
+      "StarterPlayerScripts": {
+        "Client": {
+          "$path": "src/client"
+        }
+      }
+    },
+    "Workspace": {
+      "$properties": {
+        "FilteringEnabled": true
+      },
+      "Baseplate": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.43137,
+            0.7451,
+            0.35294
+          ],
+          "Locked": true,
+          "Material": "Grass",
+          "Position": [
+            0,
+            -10,
+            0
+          ],
+          "Size": [
+            512,
+            20,
+            512
+          ]
+        }
+      },
+      "Plaza": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.27451,
+            0.27451,
+            0.35294
+          ],
+          "Locked": true,
+          "Material": "Slate",
+          "Position": [
+            0,
+            -0.2,
+            0
+          ],
+          "Size": [
+            170,
+            0.6,
+            40
+          ]
+        }
+      },
+      "Conveyor": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.15686,
+            0.15686,
+            0.21569
+          ],
+          "Locked": true,
+          "Material": "Slate",
+          "Position": [
+            0,
+            0.25,
+            0
+          ],
+          "Size": [
+            150,
+            0.5,
+            10
+          ]
+        }
+      },
+      "ConveyorEdgeN": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            1.0,
+            0.84314,
+            0.0
+          ],
+          "Locked": true,
+          "Material": "Neon",
+          "Position": [
+            0,
+            0.6,
+            -5.2
+          ],
+          "Size": [
+            150,
+            0.3,
+            0.6
+          ]
+        }
+      },
+      "ConveyorEdgeS": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            1.0,
+            0.84314,
+            0.0
+          ],
+          "Locked": true,
+          "Material": "Neon",
+          "Position": [
+            0,
+            0.6,
+            5.2
+          ],
+          "Size": [
+            150,
+            0.3,
+            0.6
+          ]
+        }
+      },
+      "Arrow0": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            1.0,
+            0.84314,
+            0.0
+          ],
+          "Locked": true,
+          "Material": "Neon",
+          "Position": [
+            -60,
+            0.6,
+            0
+          ],
+          "Size": [
+            4,
+            0.3,
+            4
+          ]
+        }
+      },
+      "Arrow1": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            1.0,
+            0.84314,
+            0.0
+          ],
+          "Locked": true,
+          "Material": "Neon",
+          "Position": [
+            -40,
+            0.6,
+            0
+          ],
+          "Size": [
+            4,
+            0.3,
+            4
+          ]
+        }
+      },
+      "Arrow2": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            1.0,
+            0.84314,
+            0.0
+          ],
+          "Locked": true,
+          "Material": "Neon",
+          "Position": [
+            -20,
+            0.6,
+            0
+          ],
+          "Size": [
+            4,
+            0.3,
+            4
+          ]
+        }
+      },
+      "Arrow3": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            1.0,
+            0.84314,
+            0.0
+          ],
+          "Locked": true,
+          "Material": "Neon",
+          "Position": [
+            0,
+            0.6,
+            0
+          ],
+          "Size": [
+            4,
+            0.3,
+            4
+          ]
+        }
+      },
+      "Arrow4": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            1.0,
+            0.84314,
+            0.0
+          ],
+          "Locked": true,
+          "Material": "Neon",
+          "Position": [
+            20,
+            0.6,
+            0
+          ],
+          "Size": [
+            4,
+            0.3,
+            4
+          ]
+        }
+      },
+      "Arrow5": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            1.0,
+            0.84314,
+            0.0
+          ],
+          "Locked": true,
+          "Material": "Neon",
+          "Position": [
+            40,
+            0.6,
+            0
+          ],
+          "Size": [
+            4,
+            0.3,
+            4
+          ]
+        }
+      },
+      "Arrow6": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            1.0,
+            0.84314,
+            0.0
+          ],
+          "Locked": true,
+          "Material": "Neon",
+          "Position": [
+            60,
+            0.6,
+            0
+          ],
+          "Size": [
+            4,
+            0.3,
+            4
+          ]
+        }
+      },
+      "Base1": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            1.0,
+            0.31373,
+            0.31373
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            -70,
+            0,
+            -60
+          ],
+          "Size": [
+            26,
+            1,
+            18
+          ]
+        }
+      },
+      "Base1Wall": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            1.0,
+            0.31373,
+            0.31373
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            -70,
+            3,
+            -69.5
+          ],
+          "Size": [
+            26,
+            6,
+            1
+          ]
+        }
+      },
+      "Sign1Pole": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.23529,
+            0.23529,
+            0.23529
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            -80,
+            2,
+            -49.5
+          ],
+          "Size": [
+            0.6,
+            4,
+            0.6
+          ]
+        }
+      },
+      "Sign1": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.09804,
+            0.09804,
+            0.15686
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            -80,
+            5,
+            -49.5
+          ],
+          "Size": [
+            7,
+            3,
+            0.5
+          ]
+        }
+      },
+      "Base2": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            1.0,
+            0.66667,
+            0.0
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            -25,
+            0,
+            -60
+          ],
+          "Size": [
+            26,
+            1,
+            18
+          ]
+        }
+      },
+      "Base2Wall": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            1.0,
+            0.66667,
+            0.0
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            -25,
+            3,
+            -69.5
+          ],
+          "Size": [
+            26,
+            6,
+            1
+          ]
+        }
+      },
+      "Sign2Pole": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.23529,
+            0.23529,
+            0.23529
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            -35,
+            2,
+            -49.5
+          ],
+          "Size": [
+            0.6,
+            4,
+            0.6
+          ]
+        }
+      },
+      "Sign2": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.09804,
+            0.09804,
+            0.15686
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            -35,
+            5,
+            -49.5
+          ],
+          "Size": [
+            7,
+            3,
+            0.5
+          ]
+        }
+      },
+      "Base3": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.31373,
+            0.78431,
+            1.0
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            20,
+            0,
+            -60
+          ],
+          "Size": [
+            26,
+            1,
+            18
+          ]
+        }
+      },
+      "Base3Wall": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.31373,
+            0.78431,
+            1.0
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            20,
+            3,
+            -69.5
+          ],
+          "Size": [
+            26,
+            6,
+            1
+          ]
+        }
+      },
+      "Sign3Pole": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.23529,
+            0.23529,
+            0.23529
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            10,
+            2,
+            -49.5
+          ],
+          "Size": [
+            0.6,
+            4,
+            0.6
+          ]
+        }
+      },
+      "Sign3": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.09804,
+            0.09804,
+            0.15686
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            10,
+            5,
+            -49.5
+          ],
+          "Size": [
+            7,
+            3,
+            0.5
+          ]
+        }
+      },
+      "Base4": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.66667,
+            0.35294,
+            1.0
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            65,
+            0,
+            -60
+          ],
+          "Size": [
+            26,
+            1,
+            18
+          ]
+        }
+      },
+      "Base4Wall": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.66667,
+            0.35294,
+            1.0
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            65,
+            3,
+            -69.5
+          ],
+          "Size": [
+            26,
+            6,
+            1
+          ]
+        }
+      },
+      "Sign4Pole": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.23529,
+            0.23529,
+            0.23529
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            55,
+            2,
+            -49.5
+          ],
+          "Size": [
+            0.6,
+            4,
+            0.6
+          ]
+        }
+      },
+      "Sign4": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.09804,
+            0.09804,
+            0.15686
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            55,
+            5,
+            -49.5
+          ],
+          "Size": [
+            7,
+            3,
+            0.5
+          ]
+        }
+      },
+      "Base5": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.35294,
+            1.0,
+            0.54902
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            -70,
+            0,
+            60
+          ],
+          "Size": [
+            26,
+            1,
+            18
+          ]
+        }
+      },
+      "Base5Wall": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.35294,
+            1.0,
+            0.54902
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            -70,
+            3,
+            69.5
+          ],
+          "Size": [
+            26,
+            6,
+            1
+          ]
+        }
+      },
+      "Sign5Pole": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.23529,
+            0.23529,
+            0.23529
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            -80,
+            2,
+            49.5
+          ],
+          "Size": [
+            0.6,
+            4,
+            0.6
+          ]
+        }
+      },
+      "Sign5": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.09804,
+            0.09804,
+            0.15686
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            -80,
+            5,
+            49.5
+          ],
+          "Size": [
+            7,
+            3,
+            0.5
+          ]
+        }
+      },
+      "Base6": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            1.0,
+            0.47059,
+            0.78431
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            -25,
+            0,
+            60
+          ],
+          "Size": [
+            26,
+            1,
+            18
+          ]
+        }
+      },
+      "Base6Wall": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            1.0,
+            0.47059,
+            0.78431
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            -25,
+            3,
+            69.5
+          ],
+          "Size": [
+            26,
+            6,
+            1
+          ]
+        }
+      },
+      "Sign6Pole": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.23529,
+            0.23529,
+            0.23529
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            -35,
+            2,
+            49.5
+          ],
+          "Size": [
+            0.6,
+            4,
+            0.6
+          ]
+        }
+      },
+      "Sign6": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.09804,
+            0.09804,
+            0.15686
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            -35,
+            5,
+            49.5
+          ],
+          "Size": [
+            7,
+            3,
+            0.5
+          ]
+        }
+      },
+      "Base7": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            1.0,
+            1.0,
+            0.35294
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            20,
+            0,
+            60
+          ],
+          "Size": [
+            26,
+            1,
+            18
+          ]
+        }
+      },
+      "Base7Wall": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            1.0,
+            1.0,
+            0.35294
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            20,
+            3,
+            69.5
+          ],
+          "Size": [
+            26,
+            6,
+            1
+          ]
+        }
+      },
+      "Sign7Pole": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.23529,
+            0.23529,
+            0.23529
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            10,
+            2,
+            49.5
+          ],
+          "Size": [
+            0.6,
+            4,
+            0.6
+          ]
+        }
+      },
+      "Sign7": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.09804,
+            0.09804,
+            0.15686
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            10,
+            5,
+            49.5
+          ],
+          "Size": [
+            7,
+            3,
+            0.5
+          ]
+        }
+      },
+      "Base8": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            65,
+            0,
+            60
+          ],
+          "Size": [
+            26,
+            1,
+            18
+          ]
+        }
+      },
+      "Base8Wall": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            65,
+            3,
+            69.5
+          ],
+          "Size": [
+            26,
+            6,
+            1
+          ]
+        }
+      },
+      "Sign8Pole": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.23529,
+            0.23529,
+            0.23529
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            55,
+            2,
+            49.5
+          ],
+          "Size": [
+            0.6,
+            4,
+            0.6
+          ]
+        }
+      },
+      "Sign8": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.09804,
+            0.09804,
+            0.15686
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            55,
+            5,
+            49.5
+          ],
+          "Size": [
+            7,
+            3,
+            0.5
+          ]
+        }
+      },
+      "SpawnLocation": {
+        "$className": "SpawnLocation",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.35294,
+            1.0,
+            0.54902
+          ],
+          "Neutral": true,
+          "Position": [
+            0,
+            1,
+            85
+          ],
+          "Size": [
+            10,
+            1,
+            10
+          ],
+          "Duration": 0,
+          "AllowTeamChangeOnTouch": false,
+          "Enabled": true
+        }
+      },
+      "TotemBase": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.47059,
+            0.47059,
+            0.54902
+          ],
+          "Locked": true,
+          "Material": "Slate",
+          "Position": [
+            0,
+            1,
+            -35
+          ],
+          "Size": [
+            16,
+            2,
+            16
+          ]
+        }
+      },
+      "TotemMid": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.58824,
+            0.58824,
+            0.62745
+          ],
+          "Locked": true,
+          "Material": "Slate",
+          "Position": [
+            0,
+            3,
+            -35
+          ],
+          "Size": [
+            11,
+            2,
+            11
+          ]
+        }
+      },
+      "TotemTop": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.70588,
+            0.70588,
+            0.7451
+          ],
+          "Locked": true,
+          "Material": "Slate",
+          "Position": [
+            0,
+            5,
+            -35
+          ],
+          "Size": [
+            6,
+            2,
+            6
+          ]
+        }
+      },
+      "TotemBall": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            1.0,
+            0.84314,
+            0.0
+          ],
+          "Locked": true,
+          "Material": "Neon",
+          "Position": [
+            0,
+            8,
+            -35
+          ],
+          "Size": [
+            5,
+            5,
+            5
+          ],
+          "Shape": "Ball"
+        }
+      },
+      "Pillar0": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.15686,
+            0.17647,
+            0.27451
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            -88,
+            7,
+            -88
+          ],
+          "Size": [
+            4,
+            14,
+            4
+          ]
+        }
+      },
+      "Beacon0": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.35294,
+            0.78431,
+            1.0
+          ],
+          "Locked": true,
+          "Material": "Neon",
+          "Position": [
+            -88,
+            15.5,
+            -88
+          ],
+          "Size": [
+            5,
+            5,
+            5
+          ],
+          "Shape": "Ball"
+        }
+      },
+      "Pillar1": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.15686,
+            0.17647,
+            0.27451
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            88,
+            7,
+            -88
+          ],
+          "Size": [
+            4,
+            14,
+            4
+          ]
+        }
+      },
+      "Beacon1": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.35294,
+            0.78431,
+            1.0
+          ],
+          "Locked": true,
+          "Material": "Neon",
+          "Position": [
+            88,
+            15.5,
+            -88
+          ],
+          "Size": [
+            5,
+            5,
+            5
+          ],
+          "Shape": "Ball"
+        }
+      },
+      "Pillar2": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.15686,
+            0.17647,
+            0.27451
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            -88,
+            7,
+            88
+          ],
+          "Size": [
+            4,
+            14,
+            4
+          ]
+        }
+      },
+      "Beacon2": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.35294,
+            0.78431,
+            1.0
+          ],
+          "Locked": true,
+          "Material": "Neon",
+          "Position": [
+            -88,
+            15.5,
+            88
+          ],
+          "Size": [
+            5,
+            5,
+            5
+          ],
+          "Shape": "Ball"
+        }
+      },
+      "Pillar3": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.15686,
+            0.17647,
+            0.27451
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            88,
+            7,
+            88
+          ],
+          "Size": [
+            4,
+            14,
+            4
+          ]
+        }
+      },
+      "Beacon3": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.35294,
+            0.78431,
+            1.0
+          ],
+          "Locked": true,
+          "Material": "Neon",
+          "Position": [
+            88,
+            15.5,
+            88
+          ],
+          "Size": [
+            5,
+            5,
+            5
+          ],
+          "Shape": "Ball"
+        }
+      },
+      "Tree0Trunk": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.47059,
+            0.31373,
+            0.15686
+          ],
+          "Locked": true,
+          "Material": "Wood",
+          "Position": [
+            -95,
+            2.5,
+            -40
+          ],
+          "Size": [
+            1.5,
+            5,
+            1.5
+          ]
+        }
+      },
+      "Tree0Leaves": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.23529,
+            0.70588,
+            0.31373
+          ],
+          "Locked": true,
+          "Material": "Grass",
+          "Position": [
+            -95,
+            7,
+            -40
+          ],
+          "Size": [
+            6,
+            6,
+            6
+          ],
+          "Shape": "Ball"
+        }
+      },
+      "Tree1Trunk": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.47059,
+            0.31373,
+            0.15686
+          ],
+          "Locked": true,
+          "Material": "Wood",
+          "Position": [
+            -95,
+            2.5,
+            40
+          ],
+          "Size": [
+            1.5,
+            5,
+            1.5
+          ]
+        }
+      },
+      "Tree1Leaves": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.23529,
+            0.70588,
+            0.31373
+          ],
+          "Locked": true,
+          "Material": "Grass",
+          "Position": [
+            -95,
+            7,
+            40
+          ],
+          "Size": [
+            6,
+            6,
+            6
+          ],
+          "Shape": "Ball"
+        }
+      },
+      "Tree2Trunk": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.47059,
+            0.31373,
+            0.15686
+          ],
+          "Locked": true,
+          "Material": "Wood",
+          "Position": [
+            95,
+            2.5,
+            -40
+          ],
+          "Size": [
+            1.5,
+            5,
+            1.5
+          ]
+        }
+      },
+      "Tree2Leaves": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.23529,
+            0.70588,
+            0.31373
+          ],
+          "Locked": true,
+          "Material": "Grass",
+          "Position": [
+            95,
+            7,
+            -40
+          ],
+          "Size": [
+            6,
+            6,
+            6
+          ],
+          "Shape": "Ball"
+        }
+      },
+      "Tree3Trunk": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.47059,
+            0.31373,
+            0.15686
+          ],
+          "Locked": true,
+          "Material": "Wood",
+          "Position": [
+            95,
+            2.5,
+            40
+          ],
+          "Size": [
+            1.5,
+            5,
+            1.5
+          ]
+        }
+      },
+      "Tree3Leaves": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.23529,
+            0.70588,
+            0.31373
+          ],
+          "Locked": true,
+          "Material": "Grass",
+          "Position": [
+            95,
+            7,
+            40
+          ],
+          "Size": [
+            6,
+            6,
+            6
+          ],
+          "Shape": "Ball"
+        }
+      },
+      "Tree4Trunk": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.47059,
+            0.31373,
+            0.15686
+          ],
+          "Locked": true,
+          "Material": "Wood",
+          "Position": [
+            -45,
+            2.5,
+            -85
+          ],
+          "Size": [
+            1.5,
+            5,
+            1.5
+          ]
+        }
+      },
+      "Tree4Leaves": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.23529,
+            0.70588,
+            0.31373
+          ],
+          "Locked": true,
+          "Material": "Grass",
+          "Position": [
+            -45,
+            7,
+            -85
+          ],
+          "Size": [
+            6,
+            6,
+            6
+          ],
+          "Shape": "Ball"
+        }
+      },
+      "Tree5Trunk": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.47059,
+            0.31373,
+            0.15686
+          ],
+          "Locked": true,
+          "Material": "Wood",
+          "Position": [
+            45,
+            2.5,
+            -85
+          ],
+          "Size": [
+            1.5,
+            5,
+            1.5
+          ]
+        }
+      },
+      "Tree5Leaves": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.23529,
+            0.70588,
+            0.31373
+          ],
+          "Locked": true,
+          "Material": "Grass",
+          "Position": [
+            45,
+            7,
+            -85
+          ],
+          "Size": [
+            6,
+            6,
+            6
+          ],
+          "Shape": "Ball"
+        }
+      },
+      "Tree6Trunk": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.47059,
+            0.31373,
+            0.15686
+          ],
+          "Locked": true,
+          "Material": "Wood",
+          "Position": [
+            -45,
+            2.5,
+            85
+          ],
+          "Size": [
+            1.5,
+            5,
+            1.5
+          ]
+        }
+      },
+      "Tree6Leaves": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.23529,
+            0.70588,
+            0.31373
+          ],
+          "Locked": true,
+          "Material": "Grass",
+          "Position": [
+            -45,
+            7,
+            85
+          ],
+          "Size": [
+            6,
+            6,
+            6
+          ],
+          "Shape": "Ball"
+        }
+      },
+      "Tree7Trunk": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.47059,
+            0.31373,
+            0.15686
+          ],
+          "Locked": true,
+          "Material": "Wood",
+          "Position": [
+            45,
+            2.5,
+            85
+          ],
+          "Size": [
+            1.5,
+            5,
+            1.5
+          ]
+        }
+      },
+      "Tree7Leaves": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.23529,
+            0.70588,
+            0.31373
+          ],
+          "Locked": true,
+          "Material": "Grass",
+          "Position": [
+            45,
+            7,
+            85
+          ],
+          "Size": [
+            6,
+            6,
+            6
+          ],
+          "Shape": "Ball"
+        }
+      },
+      "Tree8Trunk": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.47059,
+            0.31373,
+            0.15686
+          ],
+          "Locked": true,
+          "Material": "Wood",
+          "Position": [
+            -95,
+            2.5,
+            0
+          ],
+          "Size": [
+            1.5,
+            5,
+            1.5
+          ]
+        }
+      },
+      "Tree8Leaves": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.23529,
+            0.70588,
+            0.31373
+          ],
+          "Locked": true,
+          "Material": "Grass",
+          "Position": [
+            -95,
+            7,
+            0
+          ],
+          "Size": [
+            6,
+            6,
+            6
+          ],
+          "Shape": "Ball"
+        }
+      },
+      "Tree9Trunk": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.47059,
+            0.31373,
+            0.15686
+          ],
+          "Locked": true,
+          "Material": "Wood",
+          "Position": [
+            95,
+            2.5,
+            0
+          ],
+          "Size": [
+            1.5,
+            5,
+            1.5
+          ]
+        }
+      },
+      "Tree9Leaves": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.23529,
+            0.70588,
+            0.31373
+          ],
+          "Locked": true,
+          "Material": "Grass",
+          "Position": [
+            95,
+            7,
+            0
+          ],
+          "Size": [
+            6,
+            6,
+            6
+          ],
+          "Shape": "Ball"
+        }
+      },
+      "Lamp0_NPole": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.19608,
+            0.19608,
+            0.23529
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            -60,
+            2.5,
+            -8
+          ],
+          "Size": [
+            0.5,
+            5,
+            0.5
+          ]
+        }
+      },
+      "Lamp0_NBulb": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            1.0,
+            0.94118,
+            0.62745
+          ],
+          "Locked": true,
+          "Material": "Neon",
+          "Position": [
+            -60,
+            5.5,
+            -8
+          ],
+          "Size": [
+            1.6,
+            1.6,
+            1.6
+          ],
+          "Shape": "Ball"
+        }
+      },
+      "Lamp0_SPole": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.19608,
+            0.19608,
+            0.23529
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            -60,
+            2.5,
+            8
+          ],
+          "Size": [
+            0.5,
+            5,
+            0.5
+          ]
+        }
+      },
+      "Lamp0_SBulb": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            1.0,
+            0.94118,
+            0.62745
+          ],
+          "Locked": true,
+          "Material": "Neon",
+          "Position": [
+            -60,
+            5.5,
+            8
+          ],
+          "Size": [
+            1.6,
+            1.6,
+            1.6
+          ],
+          "Shape": "Ball"
+        }
+      },
+      "Lamp1_NPole": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.19608,
+            0.19608,
+            0.23529
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            -30,
+            2.5,
+            -8
+          ],
+          "Size": [
+            0.5,
+            5,
+            0.5
+          ]
+        }
+      },
+      "Lamp1_NBulb": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            1.0,
+            0.94118,
+            0.62745
+          ],
+          "Locked": true,
+          "Material": "Neon",
+          "Position": [
+            -30,
+            5.5,
+            -8
+          ],
+          "Size": [
+            1.6,
+            1.6,
+            1.6
+          ],
+          "Shape": "Ball"
+        }
+      },
+      "Lamp1_SPole": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.19608,
+            0.19608,
+            0.23529
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            -30,
+            2.5,
+            8
+          ],
+          "Size": [
+            0.5,
+            5,
+            0.5
+          ]
+        }
+      },
+      "Lamp1_SBulb": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            1.0,
+            0.94118,
+            0.62745
+          ],
+          "Locked": true,
+          "Material": "Neon",
+          "Position": [
+            -30,
+            5.5,
+            8
+          ],
+          "Size": [
+            1.6,
+            1.6,
+            1.6
+          ],
+          "Shape": "Ball"
+        }
+      },
+      "Lamp2_NPole": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.19608,
+            0.19608,
+            0.23529
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            0,
+            2.5,
+            -8
+          ],
+          "Size": [
+            0.5,
+            5,
+            0.5
+          ]
+        }
+      },
+      "Lamp2_NBulb": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            1.0,
+            0.94118,
+            0.62745
+          ],
+          "Locked": true,
+          "Material": "Neon",
+          "Position": [
+            0,
+            5.5,
+            -8
+          ],
+          "Size": [
+            1.6,
+            1.6,
+            1.6
+          ],
+          "Shape": "Ball"
+        }
+      },
+      "Lamp2_SPole": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.19608,
+            0.19608,
+            0.23529
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            0,
+            2.5,
+            8
+          ],
+          "Size": [
+            0.5,
+            5,
+            0.5
+          ]
+        }
+      },
+      "Lamp2_SBulb": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            1.0,
+            0.94118,
+            0.62745
+          ],
+          "Locked": true,
+          "Material": "Neon",
+          "Position": [
+            0,
+            5.5,
+            8
+          ],
+          "Size": [
+            1.6,
+            1.6,
+            1.6
+          ],
+          "Shape": "Ball"
+        }
+      },
+      "Lamp3_NPole": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.19608,
+            0.19608,
+            0.23529
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            30,
+            2.5,
+            -8
+          ],
+          "Size": [
+            0.5,
+            5,
+            0.5
+          ]
+        }
+      },
+      "Lamp3_NBulb": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            1.0,
+            0.94118,
+            0.62745
+          ],
+          "Locked": true,
+          "Material": "Neon",
+          "Position": [
+            30,
+            5.5,
+            -8
+          ],
+          "Size": [
+            1.6,
+            1.6,
+            1.6
+          ],
+          "Shape": "Ball"
+        }
+      },
+      "Lamp3_SPole": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.19608,
+            0.19608,
+            0.23529
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            30,
+            2.5,
+            8
+          ],
+          "Size": [
+            0.5,
+            5,
+            0.5
+          ]
+        }
+      },
+      "Lamp3_SBulb": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            1.0,
+            0.94118,
+            0.62745
+          ],
+          "Locked": true,
+          "Material": "Neon",
+          "Position": [
+            30,
+            5.5,
+            8
+          ],
+          "Size": [
+            1.6,
+            1.6,
+            1.6
+          ],
+          "Shape": "Ball"
+        }
+      },
+      "Lamp4_NPole": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.19608,
+            0.19608,
+            0.23529
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            60,
+            2.5,
+            -8
+          ],
+          "Size": [
+            0.5,
+            5,
+            0.5
+          ]
+        }
+      },
+      "Lamp4_NBulb": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            1.0,
+            0.94118,
+            0.62745
+          ],
+          "Locked": true,
+          "Material": "Neon",
+          "Position": [
+            60,
+            5.5,
+            -8
+          ],
+          "Size": [
+            1.6,
+            1.6,
+            1.6
+          ],
+          "Shape": "Ball"
+        }
+      },
+      "Lamp4_SPole": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.19608,
+            0.19608,
+            0.23529
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            60,
+            2.5,
+            8
+          ],
+          "Size": [
+            0.5,
+            5,
+            0.5
+          ]
+        }
+      },
+      "Lamp4_SBulb": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            1.0,
+            0.94118,
+            0.62745
+          ],
+          "Locked": true,
+          "Material": "Neon",
+          "Position": [
+            60,
+            5.5,
+            8
+          ],
+          "Size": [
+            1.6,
+            1.6,
+            1.6
+          ],
+          "Shape": "Ball"
+        }
+      },
+      "WallNorth": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.15686,
+            0.17647,
+            0.27451
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            0,
+            5,
+            -100
+          ],
+          "Size": [
+            204,
+            10,
+            2
+          ]
+        }
+      },
+      "WallSouth": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.15686,
+            0.17647,
+            0.27451
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            0,
+            5,
+            100
+          ],
+          "Size": [
+            204,
+            10,
+            2
+          ]
+        }
+      },
+      "WallWest": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.15686,
+            0.17647,
+            0.27451
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            -100,
+            5,
+            0
+          ],
+          "Size": [
+            2,
+            10,
+            204
+          ]
+        }
+      },
+      "WallEast": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": true,
+          "Color": [
+            0.15686,
+            0.17647,
+            0.27451
+          ],
+          "Locked": true,
+          "Material": "SmoothPlastic",
+          "Position": [
+            100,
+            5,
+            0
+          ],
+          "Size": [
+            2,
+            10,
+            204
+          ]
+        }
+      },
+      "WaveWall": {
+        "$className": "Part",
+        "$properties": {
+          "Anchored": true,
+          "CanCollide": false,
+          "Color": [
+            0.23529,
+            0.54902,
+            1.0
+          ],
+          "Locked": true,
+          "Material": "Glass",
+          "Position": [
+            -120,
+            15,
+            0
+          ],
+          "Size": [
+            2,
+            30,
+            210
+          ],
+          "Transparency": 0.35
+        }
+      }
+    }
+  }
+}
