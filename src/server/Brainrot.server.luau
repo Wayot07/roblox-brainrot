@@ -1,7 +1,15 @@
 -- Brainrot Bonanza — server.
--- Spawns brainrots on the conveyor, runs bases, earnings, stealing,
--- rebirths and the Brainrot Tsunami wave. One player can play alone;
--- stealing needs a second player.
+-- Owns the whole game: the conveyor, the bases, the economy, stealing,
+-- slapping, rebirths and the Brainrot Tsunami. A lone player can play
+-- fine; stealing only matters once a second player joins.
+--
+-- It talks to the client through five RemoteEvents in ReplicatedStorage:
+--   Stats   — server -> client, once a second (cash, income, wave timer...)
+--   Notify  — server -> client, toast messages
+--   Wave    — server -> client, tsunami phase changes
+--   Rebirth — client -> server, "I want to rebirth"
+--   Slap    — client -> server, "I want to slap"
+-- Buying and stealing run through ProximityPrompts on the brainrot models.
 
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -10,31 +18,37 @@ local Workspace = game:GetService("Workspace")
 
 local Config = require(ReplicatedStorage:WaitForChild("Shared"):WaitForChild("Config"))
 
--- RemoteEvents (created here so the client can always find them).
+-- ------------------------------------------------------------ remotes
+-- Create each RemoteEvent if it is not there yet, so the client can
+-- always WaitForChild them without a race at startup.
 local function getRemote(name)
-	local r = ReplicatedStorage:FindFirstChild(name)
-	if not r then
-		r = Instance.new("RemoteEvent")
-		r.Name = name
-		r.Parent = ReplicatedStorage
+	local existing = ReplicatedStorage:FindFirstChild(name)
+	if existing then
+		return existing
 	end
-	return r
+	local remote = Instance.new("RemoteEvent")
+	remote.Name = name
+	remote.Parent = ReplicatedStorage
+	return remote
 end
+
 local StatsEvent = getRemote("Stats")
-local RebirthEvent = getRemote("Rebirth")
-local SlapEvent = getRemote("Slap")
 local NotifyEvent = getRemote("Notify")
 local WaveEvent = getRemote("Wave")
+local RebirthEvent = getRemote("Rebirth")
+local SlapEvent = getRemote("Slap")
 
--- ---------------------------------------------------------------- state
-
-local playerData = {} -- [Player] = { cash, rebirths, baseId, brainrots = {}, carrying, stealReadyAt, slapReadyAt }
-local baseOwner = {} -- [baseId] = Player
-local conveyor = {} -- { def, mutation, model, x }
+-- --------------------------------------------------------------- state
+-- One record per player, plus who owns which base and what is walking
+-- on the conveyor right now.
+local playerData = {}
+local baseOwner = {}
+local conveyor = {}
 local waveWall = Workspace:WaitForChild("WaveWall")
 local nextWaveIn = Config.WAVE_INTERVAL
 local waveActive = false
 
+-- Income multiplier from rebirths, and the price of the next rebirth.
 local function rebirthMult(pdata)
 	return Config.REBIRTH_MULT ^ pdata.rebirths
 end
@@ -43,32 +57,35 @@ local function rebirthCost(pdata)
 	return Config.REBIRTH_BASE_COST * (Config.REBIRTH_GROWTH ^ pdata.rebirths)
 end
 
+-- Cash per second from everything on this player's base.
 local function perSecond(pdata)
 	local total = 0
-	for _, b in ipairs(pdata.brainrots) do
-		total += b.def.income * b.mutation.mult
+	for _, entry in ipairs(pdata.brainrots) do
+		total += entry.def.income * entry.mutation.mult
 	end
 	return total * rebirthMult(pdata)
 end
 
--- ------------------------------------------------------- brainrot models
-
-local function makeLabel(parent, name, text, size, color, yOffset)
-	local label = Instance.new("TextLabel")
-	label.Name = name
-	label.Size = UDim2.new(1, 0, 0, size)
-	label.Position = UDim2.new(0, 0, 0, yOffset)
-	label.BackgroundTransparency = 1
-	label.Text = text
-	label.TextColor3 = color
-	label.TextScaled = true
-	label.Font = Enum.Font.GothamBold
-	label.TextStrokeTransparency = 0.4
-	label.Parent = parent
-	return label
+-- -------------------------------------------------------- model building
+-- A small floating text line inside a BillboardGui.
+local function makeTagLine(parent, name, text, height, color, y)
+	local line = Instance.new("TextLabel")
+	line.Name = name
+	line.Size = UDim2.new(1, 0, 0, height)
+	line.Position = UDim2.new(0, 0, 0, y)
+	line.BackgroundTransparency = 1
+	line.Text = text
+	line.TextColor3 = color
+	line.TextScaled = true
+	line.Font = Enum.Font.GothamBold
+	line.TextStrokeTransparency = 0.4
+	line.Parent = parent
+	return line
 end
 
--- Builds the 3D model for one brainrot. Anchored; the server moves it.
+-- The 3D model for one brainrot: a body, a head, a neon hat coloured by
+-- its mutation, and a floating tag (name, rarity/mutation, income).
+-- The model is anchored; only the server moves it.
 local function buildBrainrotModel(def, mutation)
 	local model = Instance.new("Model")
 	model.Name = def.name
@@ -92,7 +109,6 @@ local function buildBrainrotModel(def, mutation)
 	head.CanCollide = false
 	head.Parent = model
 
-	-- A little hat / fin on top so characters read at a glance.
 	local hat = Instance.new("Part")
 	hat.Name = "Hat"
 	hat.Size = Vector3.new(1.8, 0.4, 1.8)
@@ -103,22 +119,23 @@ local function buildBrainrotModel(def, mutation)
 	hat.CanCollide = false
 	hat.Parent = model
 
-	local gui = Instance.new("BillboardGui")
-	gui.Name = "Tag"
-	gui.Size = UDim2.new(0, 140, 0, 64)
-	gui.StudsOffsetWorldSpace = Vector3.new(0, 3.6, 0)
-	gui.AlwaysOnTop = true
-	gui.Parent = body
-	makeLabel(gui, "Name", def.name, 22, Config.RARITY_COLORS[def.rarity], 0)
-	local mutText = mutation.name == "Normal" and def.rarity or (mutation.name .. " " .. def.rarity)
-	makeLabel(gui, "Rarity", mutText, 16, mutation.color, 24)
-	makeLabel(gui, "Income", "$" .. tostring(def.income * mutation.mult) .. "/s", 20, Color3.fromRGB(120, 255, 120), 42)
+	local tag = Instance.new("BillboardGui")
+	tag.Name = "Tag"
+	tag.Size = UDim2.new(0, 140, 0, 64)
+	tag.StudsOffsetWorldSpace = Vector3.new(0, 3.6, 0)
+	tag.AlwaysOnTop = true
+	tag.Parent = body
+	makeTagLine(tag, "Name", def.name, 22, Config.RARITY_COLORS[def.rarity], 0)
+	local rarityText = mutation.name == "Normal" and def.rarity or (mutation.name .. " " .. def.rarity)
+	makeTagLine(tag, "Rarity", rarityText, 16, mutation.color, 24)
+	makeTagLine(tag, "Income", "$" .. tostring(def.income * mutation.mult) .. "/s", 20, Color3.fromRGB(120, 255, 120), 42)
 
 	model.PrimaryPart = body
 	return model
 end
 
-local function attachBuyPrompt(model, def, mutation)
+-- E to buy a brainrot that is still on the conveyor.
+local function attachBuyPrompt(model, def)
 	local prompt = Instance.new("ProximityPrompt")
 	prompt.ActionText = "Buy"
 	prompt.ObjectText = def.name .. " — $" .. tostring(def.cost)
@@ -130,6 +147,7 @@ local function attachBuyPrompt(model, def, mutation)
 	return prompt
 end
 
+-- Hold E to steal a brainrot that sits on someone else's base.
 local function attachStealPrompt(model, def, mutation)
 	local prompt = Instance.new("ProximityPrompt")
 	prompt.ActionText = "Steal"
@@ -142,18 +160,18 @@ local function attachStealPrompt(model, def, mutation)
 	return prompt
 end
 
--- ------------------------------------------------------- base signs
--- Label every base's sign board so the judge (and players) can read
--- which plot is which from the screenshots.
+-- ------------------------------------------------------------ base signs
+-- Put a readable label on every base's sign board, so the plots are
+-- identifiable from the screenshots and in play.
 for _, base in ipairs(Config.BASES) do
 	local sign = Workspace:FindFirstChild("Sign" .. tostring(base.id))
 	if sign then
-		local gui = Instance.new("BillboardGui")
-		gui.Name = "BaseTag"
-		gui.Size = UDim2.fromOffset(220, 60)
-		gui.StudsOffsetWorldSpace = Vector3.new(0, 0, 0)
-		gui.AlwaysOnTop = true
-		gui.Parent = sign
+		local board = Instance.new("BillboardGui")
+		board.Name = "BaseTag"
+		board.Size = UDim2.fromOffset(220, 60)
+		board.StudsOffsetWorldSpace = Vector3.new(0, 0, 0)
+		board.AlwaysOnTop = true
+		board.Parent = sign
 		local label = Instance.new("TextLabel")
 		label.Size = UDim2.fromScale(1, 1)
 		label.BackgroundTransparency = 1
@@ -162,15 +180,14 @@ for _, base in ipairs(Config.BASES) do
 		label.TextScaled = true
 		label.Font = Enum.Font.GothamBold
 		label.TextStrokeTransparency = 0.3
-		label.Parent = gui
+		label.Parent = board
 	end
 end
 
 -- ------------------------------------------------------------ base slots
-
+-- Slots are laid out 4 across by 2 deep on each base platform.
 local function slotPosition(baseId, slotIndex)
 	local base = Config.BASES[baseId]
-	-- 4 columns x 2 rows on the platform.
 	local col = (slotIndex - 1) % 4
 	local row = math.floor((slotIndex - 1) / 4)
 	local x = base.center.X - 9 + col * 6
@@ -178,6 +195,7 @@ local function slotPosition(baseId, slotIndex)
 	return Vector3.new(x, 1.5, z)
 end
 
+-- Next free slot number, or nil when the base is full.
 local function freeSlot(pdata)
 	if #pdata.brainrots >= Config.BASE_SLOTS then
 		return nil
@@ -185,6 +203,8 @@ local function freeSlot(pdata)
 	return #pdata.brainrots + 1
 end
 
+-- Move a brainrot onto a player's base and arm its steal prompt.
+-- Returns false when the base is full.
 local function placeInBase(pdata, brainrot)
 	local slot = freeSlot(pdata)
 	if not slot then
@@ -192,7 +212,6 @@ local function placeInBase(pdata, brainrot)
 	end
 	brainrot.slot = slot
 	brainrot.model:PivotTo(CFrame.new(slotPosition(pdata.baseId, slot)))
-	-- A steal prompt for everyone else.
 	if brainrot.prompt then
 		brainrot.prompt:Destroy()
 	end
@@ -204,9 +223,11 @@ local function placeInBase(pdata, brainrot)
 	return true
 end
 
+-- Take a brainrot off a player's base (stolen or sold). Returns whether
+-- it was there at all.
 local function removeFromBase(pdata, brainrot)
-	for i, b in ipairs(pdata.brainrots) do
-		if b == brainrot then
+	for i, entry in ipairs(pdata.brainrots) do
+		if entry == brainrot then
 			table.remove(pdata.brainrots, i)
 			return true
 		end
@@ -214,14 +235,15 @@ local function removeFromBase(pdata, brainrot)
 	return false
 end
 
--- ----------------------------------------------------------------- buy
-
+-- ------------------------------------------------------------------ buy
+-- A buy prompt fired on the conveyor. Charges the player and moves the
+-- brainrot onto their base.
 local function onBuyTriggered(player, brainrot)
 	local pdata = playerData[player]
 	if not pdata or not brainrot.onConveyor then
 		return
 	end
-	if playerData[player].cash < brainrot.def.cost then
+	if pdata.cash < brainrot.def.cost then
 		NotifyEvent:FireClient(player, "Not enough cash! Need $" .. tostring(brainrot.def.cost))
 		return
 	end
@@ -229,10 +251,9 @@ local function onBuyTriggered(player, brainrot)
 		NotifyEvent:FireClient(player, "Your base is full! Rebirth or make room.")
 		return
 	end
-	-- Take it off the conveyor.
 	brainrot.onConveyor = false
-	for i, b in ipairs(conveyor) do
-		if b == brainrot then
+	for i, entry in ipairs(conveyor) do
+		if entry == brainrot then
 			table.remove(conveyor, i)
 			break
 		end
@@ -247,14 +268,14 @@ local function onBuyTriggered(player, brainrot)
 	end
 end
 
--- ---------------------------------------------------------------- steal
-
+-- ----------------------------------------------------------------- steal
+-- A steal prompt fired on a brainrot sitting on someone's base. The thief
+-- picks it up and must carry it home; the victim is warned.
 function onStealTriggered(thief, ownerData, brainrot)
 	local tdata = playerData[thief]
 	if not tdata then
 		return
 	end
-	-- Find the owner player for this base.
 	local owner = nil
 	for pl, pd in pairs(playerData) do
 		if pd == ownerData then
@@ -293,6 +314,8 @@ function onStealTriggered(thief, ownerData, brainrot)
 	NotifyEvent:FireClient(owner, thief.DisplayName .. " stole your " .. brainrot.def.name .. "! Slap them!")
 end
 
+-- Drop what a player is carrying. When returnHome is true the brainrot
+-- goes back to its owner's base (if there is room); otherwise it is gone.
 local function dropCarried(player, returnHome)
 	local pdata = playerData[player]
 	if not pdata or not pdata.carrying then
@@ -308,7 +331,6 @@ local function dropCarried(player, returnHome)
 		end
 	end
 	if returnHome then
-		-- Back to its owner's base if there is room, else it is lost.
 		if placeInBase(carried.from, carried.brainrot) then
 			NotifyEvent:FireClient(carried.fromPlayer, "Your " .. carried.brainrot.def.name .. " is back home!")
 		else
@@ -319,6 +341,8 @@ local function dropCarried(player, returnHome)
 	end
 end
 
+-- The thief reached their own base with the stolen brainrot: it is theirs
+-- now. A full base sells it for half price instead.
 local function secureCarried(player)
 	local pdata = playerData[player]
 	if not pdata or not pdata.carrying then
@@ -336,7 +360,6 @@ local function secureCarried(player)
 	if placeInBase(pdata, carried.brainrot) then
 		NotifyEvent:FireClient(player, "Secured " .. carried.brainrot.def.name .. " in your base!")
 	else
-		-- Base full: sell it for half price.
 		local refund = math.floor(carried.brainrot.def.cost / 2)
 		pdata.cash += refund
 		carried.brainrot.model:Destroy()
@@ -344,8 +367,9 @@ local function secureCarried(player)
 	end
 end
 
--- ---------------------------------------------------------------- slap
-
+-- ------------------------------------------------------------------ slap
+-- Slap the nearest other player within range: knock them back, and if
+-- they were carrying a stolen brainrot they drop it.
 SlapEvent.OnServerEvent:Connect(function(player)
 	local pdata = playerData[player]
 	if not pdata then
@@ -384,7 +408,6 @@ SlapEvent.OnServerEvent:Connect(function(player)
 	if not oroot then
 		return
 	end
-	-- Knock them away from the slapper.
 	local dir = (oroot.Position - root.Position).Unit
 	oroot.AssemblyLinearVelocity = Vector3.new(dir.X, 0.6, dir.Z) * Config.SLAP_KNOCKBACK
 	NotifyEvent:FireClient(best, player.DisplayName .. " slapped you!")
@@ -395,8 +418,9 @@ SlapEvent.OnServerEvent:Connect(function(player)
 	end
 end)
 
--- -------------------------------------------------------------- rebirth
-
+-- --------------------------------------------------------------- rebirth
+-- Pay the rebirth price: every brainrot on the base is destroyed, cash
+-- resets to zero, and the income multiplier steps up permanently.
 RebirthEvent.OnServerEvent:Connect(function(player)
 	local pdata = playerData[player]
 	if not pdata then
@@ -407,12 +431,11 @@ RebirthEvent.OnServerEvent:Connect(function(player)
 		NotifyEvent:FireClient(player, "Rebirth costs " .. Config.formatCash(cost) .. " — you have " .. Config.formatCash(pdata.cash))
 		return
 	end
-	-- Clear the base.
-	for _, b in ipairs(pdata.brainrots) do
-		if b.prompt then
-			b.prompt:Destroy()
+	for _, entry in ipairs(pdata.brainrots) do
+		if entry.prompt then
+			entry.prompt:Destroy()
 		end
-		b.model:Destroy()
+		entry.model:Destroy()
 	end
 	pdata.brainrots = {}
 	pdata.cash = 0
@@ -420,8 +443,8 @@ RebirthEvent.OnServerEvent:Connect(function(player)
 	NotifyEvent:FireClient(player, "REBIRTH #" .. tostring(pdata.rebirths) .. "! Income x" .. string.format("%.2f", rebirthMult(pdata)))
 end)
 
--- ---------------------------------------------------------- conveyor
-
+-- -------------------------------------------------------------- conveyor
+-- Spawn one brainrot at the west end of the lane, unless the lane is full.
 local function spawnBrainrot()
 	if #conveyor >= Config.CONVEYOR_MAX then
 		return
@@ -438,15 +461,16 @@ local function spawnBrainrot()
 		x = Config.CONVEYOR_FROM_X,
 		onConveyor = true,
 	}
-	brainrot.prompt = attachBuyPrompt(model, def, mutation)
+	brainrot.prompt = attachBuyPrompt(model, def)
 	brainrot.prompt.Triggered:Connect(function(player)
 		onBuyTriggered(player, brainrot)
 	end)
 	table.insert(conveyor, brainrot)
 end
 
--- -------------------------------------------------------------- waves
-
+-- ------------------------------------------------------------------ wave
+-- Is this player safe from the tsunami: inside their own base, or in the
+-- spawn safe zone?
 local function playerInOwnBase(player)
 	local pdata = playerData[player]
 	if not pdata then
@@ -460,16 +484,19 @@ local function playerInOwnBase(player)
 	if not root then
 		return false
 	end
-	-- Spawn area counts as safe.
 	if (root.Position - Config.SPAWN_POS).Magnitude < 14 then
 		return true
 	end
 	local base = Config.BASES[pdata.baseId]
+	if not base then
+		return false
+	end
 	local dx = math.abs(root.Position.X - base.center.X)
 	local dz = math.abs(root.Position.Z - base.center.Z)
 	return dx <= (Config.BASE_SIZE.X / 2 + 1) and dz <= (Config.BASE_SIZE.Z / 2 + 1)
 end
 
+-- Fling a caught player back to spawn.
 local function flingToSpawn(player)
 	local char = player.Character
 	if not char then
@@ -482,18 +509,18 @@ local function flingToSpawn(player)
 	end
 end
 
+-- One full tsunami: warn, wait, then sweep the wall across the map,
+-- flinging anyone caught outside their base.
 local function runWave()
 	waveActive = true
 	WaveEvent:FireAllClients("warning", Config.WAVE_WARNING)
 	task.wait(Config.WAVE_WARNING)
 	WaveEvent:FireAllClients("sweep", Config.WAVE_SWEEP)
-	-- Sweep the wall across the map.
 	local steps = 40
 	for i = 0, steps do
 		local t = i / steps
 		local x = Config.WAVE_FROM_X + (Config.WAVE_TO_X - Config.WAVE_FROM_X) * t
 		waveWall.CFrame = CFrame.new(x, 15, 0)
-		-- Anyone caught outside their base gets flung home.
 		for player, _ in pairs(playerData) do
 			if not playerInOwnBase(player) then
 				flingToSpawn(player)
@@ -511,8 +538,8 @@ local function runWave()
 	WaveEvent:FireAllClients("clear", 0)
 end
 
--- ------------------------------------------------------------- players
-
+-- --------------------------------------------------------------- players
+-- Hand out the first free base plot, or nil when all eight are taken.
 local function assignBase(player)
 	for id = 1, #Config.BASES do
 		if not baseOwner[id] then
@@ -573,11 +600,11 @@ Players.PlayerRemoving:Connect(function(player)
 	if pdata.carrying then
 		dropCarried(player, true)
 	end
-	for _, b in ipairs(pdata.brainrots) do
-		if b.prompt then
-			b.prompt:Destroy()
+	for _, entry in ipairs(pdata.brainrots) do
+		if entry.prompt then
+			entry.prompt:Destroy()
 		end
-		b.model:Destroy()
+		entry.model:Destroy()
 	end
 	if pdata.baseId then
 		baseOwner[pdata.baseId] = nil
@@ -585,8 +612,9 @@ Players.PlayerRemoving:Connect(function(player)
 	playerData[player] = nil
 end)
 
--- ------------------------------------------------------------ main loop
-
+-- ------------------------------------------------------------- main loop
+-- One Heartbeat drives everything: the conveyor, carried brainrots,
+-- spawning, the once-a-second earnings and stats push, and the wave clock.
 local spawnTimer = 0
 local earnTimer = 0
 local statsTimer = 0
@@ -594,22 +622,22 @@ local waveTimer = 0
 local carryTimer = 0
 
 RunService.Heartbeat:Connect(function(dt)
-	-- Conveyor movement.
+	-- Walk the conveyor; brainrots that reach the east end despawn.
 	for i = #conveyor, 1, -1 do
-		local b = conveyor[i]
-		b.x += Config.CONVEYOR_SPEED * dt
-		if b.x > Config.CONVEYOR_TO_X then
-			if b.prompt then
-				b.prompt:Destroy()
+		local entry = conveyor[i]
+		entry.x += Config.CONVEYOR_SPEED * dt
+		if entry.x > Config.CONVEYOR_TO_X then
+			if entry.prompt then
+				entry.prompt:Destroy()
 			end
-			b.model:Destroy()
+			entry.model:Destroy()
 			table.remove(conveyor, i)
 		else
-			b.model:PivotTo(CFrame.new(b.x, 1.5 + math.sin(os.clock() * 3 + b.x) * 0.15, Config.CONVEYOR_Z))
+			entry.model:PivotTo(CFrame.new(entry.x, 1.5 + math.sin(os.clock() * 3 + entry.x) * 0.15, Config.CONVEYOR_Z))
 		end
 	end
 
-	-- Carried brainrots hover over the carrier's head.
+	-- A carried brainrot hovers above its carrier's head.
 	for player, pdata in pairs(playerData) do
 		if pdata.carrying and player.Character then
 			local root = player.Character:FindFirstChild("HumanoidRootPart")
@@ -619,7 +647,7 @@ RunService.Heartbeat:Connect(function(dt)
 		end
 	end
 
-	-- Secure a carried brainrot when its thief is home.
+	-- A thief who made it home secures the stolen brainrot.
 	carryTimer += dt
 	if carryTimer >= 0.25 then
 		carryTimer = 0
@@ -630,14 +658,14 @@ RunService.Heartbeat:Connect(function(dt)
 		end
 	end
 
-	-- Spawning.
+	-- Spawn on a timer.
 	spawnTimer += dt
 	if spawnTimer >= Config.SPAWN_INTERVAL then
 		spawnTimer = 0
 		spawnBrainrot()
 	end
 
-	-- Earnings, once a second.
+	-- Earnings and leaderstats, once a second.
 	earnTimer += dt
 	if earnTimer >= 1 then
 		earnTimer = 0
@@ -664,19 +692,19 @@ RunService.Heartbeat:Connect(function(dt)
 		end
 	end
 
-	-- Stats push to every client, once a second.
+	-- Push a stats snapshot to every client, once a second.
 	statsTimer += dt
 	if statsTimer >= 1 then
 		statsTimer = 0
 		local waveIn = waveActive and 0 or math.max(0, nextWaveIn - waveTimer)
 		for player, pdata in pairs(playerData) do
 			local list = {}
-			for _, b in ipairs(pdata.brainrots) do
+			for _, entry in ipairs(pdata.brainrots) do
 				table.insert(list, {
-					name = b.def.name,
-					income = b.def.income * b.mutation.mult,
-					rarity = b.def.rarity,
-					mutation = b.mutation.name,
+					name = entry.def.name,
+					income = entry.def.income * entry.mutation.mult,
+					rarity = entry.def.rarity,
+					mutation = entry.mutation.name,
 				})
 			end
 			StatsEvent:FireClient(player, {
@@ -696,7 +724,7 @@ RunService.Heartbeat:Connect(function(dt)
 		end
 	end
 
-	-- Wave scheduling.
+	-- Schedule the next tsunami.
 	if not waveActive then
 		waveTimer += dt
 		if waveTimer >= nextWaveIn then
@@ -706,7 +734,7 @@ RunService.Heartbeat:Connect(function(dt)
 	end
 end)
 
--- Seed the conveyor so the first player sees brainrots right away.
+-- Seed the lane so the first player sees brainrots immediately.
 for _ = 1, 4 do
 	spawnBrainrot()
 end

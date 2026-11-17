@@ -1,35 +1,43 @@
--- Brainrot Bonanza — shared config.
--- Every number the server and the client agree on lives here.
+-- Brainrot Bonanza — shared numbers.
+-- One module both the server and the client require. It holds the map
+-- geometry, the eight base plots, the brainrot catalogue, the spawn odds,
+-- the mutation table, and every tuning knob (steal, rebirth, tsunami).
+-- Change a number here and both sides of the game agree on it.
 
 local Config = {}
 
--- Map layout (studs). The conveyor runs along X at z = 0.
+-- ------------------------------------------------------------------ map
+-- The world is a square. The conveyor is a straight lane along X at z = 0;
+-- brainrots enter at the west end and walk east until bought or despawned.
 Config.MAP_HALF = 100
 Config.CONVEYOR_Z = 0
 Config.CONVEYOR_FROM_X = -70
 Config.CONVEYOR_TO_X = 70
 Config.CONVEYOR_WIDTH = 10
-Config.CONVEYOR_SPEED = 4 -- studs per second the brainrots walk
-Config.CONVEYOR_MAX = 12 -- most brainrots on the lane at once
-Config.SPAWN_INTERVAL = 4 -- seconds between spawn attempts
+Config.CONVEYOR_SPEED = 4
+Config.CONVEYOR_MAX = 12
+Config.SPAWN_INTERVAL = 4
 Config.SPAWN_POS = Vector3.new(0, 1, 85)
 
--- 8 base plots: 4 north (z = -60), 4 south (z = 60).
+-- ----------------------------------------------------------------- bases
+-- Eight plots in two rows of four. North row sits at z = -60, south at z = 60.
+-- Each plot is 26 wide by 18 deep and holds up to BASE_SLOTS brainrots.
 Config.BASES = {
-	{ name = "Red", id = 1, center = Vector3.new(-70, 0, -60), color = Color3.fromRGB(255, 80, 80) },
-	{ name = "Orange", id = 2, center = Vector3.new(-25, 0, -60), color = Color3.fromRGB(255, 170, 0) },
-	{ name = "Blue", id = 3, center = Vector3.new(20, 0, -60), color = Color3.fromRGB(80, 200, 255) },
-	{ name = "Purple", id = 4, center = Vector3.new(65, 0, -60), color = Color3.fromRGB(170, 90, 255) },
-	{ name = "Green", id = 5, center = Vector3.new(-70, 0, 60), color = Color3.fromRGB(90, 255, 140) },
-	{ name = "Pink", id = 6, center = Vector3.new(-25, 0, 60), color = Color3.fromRGB(255, 120, 200) },
-	{ name = "Yellow", id = 7, center = Vector3.new(20, 0, 60), color = Color3.fromRGB(255, 255, 90) },
-	{ name = "White", id = 8, center = Vector3.new(65, 0, 60), color = Color3.fromRGB(255, 255, 255) },
+	{ id = 1, name = "Red", center = Vector3.new(-70, 0, -60), color = Color3.fromRGB(255, 80, 80) },
+	{ id = 2, name = "Orange", center = Vector3.new(-25, 0, -60), color = Color3.fromRGB(255, 170, 0) },
+	{ id = 3, name = "Blue", center = Vector3.new(20, 0, -60), color = Color3.fromRGB(80, 200, 255) },
+	{ id = 4, name = "Purple", center = Vector3.new(65, 0, -60), color = Color3.fromRGB(170, 90, 255) },
+	{ id = 5, name = "Green", center = Vector3.new(-70, 0, 60), color = Color3.fromRGB(90, 255, 140) },
+	{ id = 6, name = "Pink", center = Vector3.new(-25, 0, 60), color = Color3.fromRGB(255, 120, 200) },
+	{ id = 7, name = "Yellow", center = Vector3.new(20, 0, 60), color = Color3.fromRGB(255, 255, 90) },
+	{ id = 8, name = "White", center = Vector3.new(65, 0, 60), color = Color3.fromRGB(255, 255, 255) },
 }
 Config.BASE_SIZE = Vector3.new(26, 1, 18)
-Config.BASE_SLOTS = 8 -- brainrots a base can hold
+Config.BASE_SLOTS = 8
 
--- Brainrot catalogue. income = cash per second, cost = buy price.
--- color = body colour, accent = head/accessory colour.
+-- -------------------------------------------------------------- brainrots
+-- income is cash per second; cost is the buy price. color is the body,
+-- accent is the head. Two brainrots per rarity, six rarities in all.
 Config.BRAINROTS = {
 	{ name = "Noobini Pizzanini", rarity = "Common", income = 1, cost = 25, color = Color3.fromRGB(255, 220, 130), accent = Color3.fromRGB(200, 60, 60) },
 	{ name = "Chimpanzini Bananini", rarity = "Common", income = 2, cost = 50, color = Color3.fromRGB(255, 235, 90), accent = Color3.fromRGB(120, 80, 40) },
@@ -45,7 +53,7 @@ Config.BRAINROTS = {
 	{ name = "Los Tralaleritos", rarity = "Secret", income = 1000, cost = 200000, color = Color3.fromRGB(255, 60, 60), accent = Color3.fromRGB(90, 200, 255) },
 }
 
--- Spawn weights per rarity (out of 100).
+-- Odds that a spawn lands on each rarity (weights, not percents).
 Config.RARITY_WEIGHTS = {
 	Common = 40,
 	Rare = 28,
@@ -55,7 +63,7 @@ Config.RARITY_WEIGHTS = {
 	Secret = 2,
 }
 
--- Mutations: roll (out of 100), income multiplier, label colour.
+-- Mutations roll on spawn. mult multiplies the brainrot's income.
 Config.MUTATIONS = {
 	{ name = "Normal", weight = 88, mult = 1, color = Color3.fromRGB(255, 255, 255) },
 	{ name = "Golden", weight = 8, mult = 3, color = Color3.fromRGB(255, 215, 0) },
@@ -63,7 +71,7 @@ Config.MUTATIONS = {
 	{ name = "Rainbow", weight = 1, mult = 10, color = Color3.fromRGB(255, 90, 200) },
 }
 
--- Rarity colours for labels.
+-- Label colours per rarity, for the name tags and the collection list.
 Config.RARITY_COLORS = {
 	Common = Color3.fromRGB(200, 200, 200),
 	Rare = Color3.fromRGB(90, 180, 255),
@@ -73,31 +81,41 @@ Config.RARITY_COLORS = {
 	Secret = Color3.fromRGB(255, 215, 0),
 }
 
--- Steal rules.
-Config.STEAL_HOLD = 3 -- seconds holding the prompt to steal
-Config.STEAL_COOLDOWN = 30 -- seconds between steals per player
-Config.CARRY_SPEED = 10 -- WalkSpeed while carrying a stolen brainrot
+-- ----------------------------------------------------------------- steal
+-- Hold E for STEAL_HOLD seconds on someone else's brainrot to lift it,
+-- then carry it home. While carrying you walk slower, and a slap makes
+-- you drop it. STEAL_COOLDOWN gates how often one player can steal.
+Config.STEAL_HOLD = 3
+Config.STEAL_COOLDOWN = 30
+Config.CARRY_SPEED = 10
 Config.NORMAL_SPEED = 16
-Config.SLAP_RANGE = 12 -- studs
-Config.SLAP_COOLDOWN = 2 -- seconds
-Config.SLAP_KNOCKBACK = 45 -- studs/sec fling
+Config.SLAP_RANGE = 12
+Config.SLAP_COOLDOWN = 2
+Config.SLAP_KNOCKBACK = 45
 
--- Rebirth: cost = BASE * GROWTH ^ rebirths, income x MULT per rebirth.
+-- --------------------------------------------------------------- rebirth
+-- Rebirth wipes cash and brainrots and raises the income multiplier.
+-- cost = BASE_COST * GROWTH ^ rebirths; income x MULT per rebirth.
 Config.REBIRTH_BASE_COST = 10000
 Config.REBIRTH_GROWTH = 5
 Config.REBIRTH_MULT = 1.25
 
--- Brainrot Tsunami wave.
-Config.WAVE_INTERVAL = 90 -- seconds between waves
-Config.WAVE_WARNING = 10 -- seconds of warning before the sweep
-Config.WAVE_SWEEP = 8 -- seconds the wall takes to cross the map
+-- ------------------------------------------------------------------ wave
+-- Every WAVE_INTERVAL seconds the tsunami warns, then sweeps the map.
+-- Caught outside your own base (or the spawn safe zone) and you are
+-- flung back to spawn, dropping anything you carry.
+Config.WAVE_INTERVAL = 90
+Config.WAVE_WARNING = 10
+Config.WAVE_SWEEP = 8
 Config.WAVE_FROM_X = -120
 Config.WAVE_TO_X = 120
 
--- Starting cash for a new player.
+-- Cash a brand-new player starts with.
 Config.START_CASH = 100
 
--- Format cash: 1.2K / 3.4M.
+-- ---------------------------------------------------------------- helpers
+
+-- Short cash: $850, $1.2K, $3.4M.
 function Config.formatCash(n)
 	n = math.floor(n)
 	if n >= 1000000 then
@@ -109,7 +127,8 @@ function Config.formatCash(n)
 	end
 end
 
--- Pick a brainrot definition by rarity weight.
+-- Weighted pick: roll a rarity by RARITY_WEIGHTS, then a random brainrot
+-- of that rarity.
 function Config.pickBrainrot()
 	local total = 0
 	for _, w in pairs(Config.RARITY_WEIGHTS) do
@@ -134,7 +153,7 @@ function Config.pickBrainrot()
 	return pool[math.random(1, #pool)]
 end
 
--- Roll a mutation.
+-- Roll one mutation from the MUTATIONS table.
 function Config.rollMutation()
 	local roll = math.random(1, 100)
 	local acc = 0

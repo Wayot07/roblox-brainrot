@@ -26,13 +26,20 @@
 // Outside the grader's container, MAKEFUN_OUTPUT_DIR stands in for /output:
 //   mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
 
-import { copyFileSync, cpSync, existsSync, mkdirSync, writeFileSync } from 'node:fs';
+import { copyFileSync, cpSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { basename, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildDossier } from './vendor/makefun-roblox.ts';
 
 const here = fileURLToPath(new URL('.', import.meta.url));
 const out = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
+
+// The play-link gate refuses a placeholder PLAY.json, so fail fast here
+// with a readable error instead of handing in a dead link.
+const playLink = JSON.parse(readFileSync(join(here, 'PLAY.json'), 'utf8')) as { place_id: number; universe_id: number; url: string };
+if (!playLink.place_id || !playLink.universe_id) {
+  throw new Error('PLAY.json still holds a placeholder: publish the game as a Public experience first, then fill in place_id and universe_id.');
+}
 
 /** cpSync's filter: leave out every file and directory whose name starts with a dot (.gitkeep, .DS_Store, .git). */
 const notDotted = (path: string): boolean => !basename(path).startsWith('.');
@@ -50,3 +57,6 @@ writeFileSync(
   join(out, 'dossier.json'),
   buildDossier(out, { text_max_bytes: 65536, screenshots: { max: 4, max_bytes: 262144 }, max_instances: 500000, scripts_max_source_bytes: 8388608, scripts_max_path_chars: 1048576 }),
 );
+
+// Hand-in complete: the output directory now holds everything the judge reads.
+console.log(`Brainrot Bonanza handed in to ${out} (game.rbxl + dossier.json).`);
